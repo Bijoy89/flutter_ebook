@@ -1,16 +1,55 @@
-# flutter_ebook
 
-A new Flutter project.
+# E-Book App in flutter
+This app make for reading online e book .I have made this app in flutter.
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+## Tech Stack
 
-A few resources to get you started if this is your first Flutter project:
+**Client:** Flutter,Dart
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+**Server:** Firebase,Dot net
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+## Features
+
+- Pdf Reading View
+- Text to Speech
+- Add,Delete,Update Book
+- User Management
+
+## Color Reference
+
+| Color             | Hex                                                                |
+| ----------------- | ------------------------------------------------------------------ |
+| Background Color | #FFFFFF |
+| Font Color | #000000 |
+| Primary Color | #0057FF|
+| Lebel Color |  #6B6B6B|
+| Secondry Color |  #00C236|
+
+
+
+## Authors
+
+- [@Bijoy89](https://github.com/Bijoy89)
+
+
+## Run Locally
+
+Clone the project
+
+```bash
+  git clone https://github.com/Bijoy89/flutter_ebook
+```
+
+Open in android studio
+
+```bash
+  flutter pub get
+```
+
+run app
+
+```bash
+  flutter run
+```
