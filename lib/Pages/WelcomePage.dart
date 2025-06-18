@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ebook/Components/PrimaryButton.dart';
+import 'package:flutter_ebook/Pages/HomePage/Homepage.dart';
+import 'package:get/get.dart';
 
 class Welcomepage extends StatelessWidget {
   const Welcomepage({super.key});
@@ -89,7 +91,9 @@ class Welcomepage extends StatelessWidget {
             padding: EdgeInsets.all(10),
             child: PrimaryButton(
                 btnName: "Continue",
-                onTap: () {}
+                onTap: () {
+                  Get.offAll(HomePage());// So that no one can navigate from homepage  to welcome page
+                }
             ),
           ),
         ],
