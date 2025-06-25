@@ -39,6 +39,8 @@ dependencies:
   get: ^4.6.6
   json_annotation: ^4.9.0
   flutter_svg: ^2.2.0
+  syncfusion_flutter_pdfviewer: ^29.2.11
+
 
 dev_dependencies:
   flutter_test:
