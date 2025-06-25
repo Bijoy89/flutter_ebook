@@ -7,6 +7,7 @@ import 'Config/Themes.dart';
 
 void main() {
   runApp(DevicePreview(builder: (context) => flutter_ebookmain()));
+  //runApp(const flutter_ebookmain());
 }
 class flutter_ebookmain extends StatelessWidget {
   const flutter_ebookmain({super.key});

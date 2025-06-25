@@ -1,63 +1,79 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-
-import '../../Config/Colors.dart';
 import '../../Pages/BookPage/BookPage.dart';
 
 class BookActionButton extends StatelessWidget {
-  const BookActionButton({super.key});
+  final String bookUrl;
+  const BookActionButton({super.key, required this.bookUrl});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 60,
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primary,
         borderRadius: BorderRadius.circular(15),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          InkWell(
-            onTap: () {
-              Get.to(BookPage()); // Navigate to BookPage on tap
-            },
-            child: Row(
-              children: [
-                SvgPicture.asset("Assets/Icons/book.svg"),
-                SizedBox(width: 10),
-                Text(
-                  "READ BOOK",
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+          // READ BOOK
+          Expanded(
+            child: InkWell(
+              onTap: () => Get.to(BookPage(bookUrl: bookUrl)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SvgPicture.asset("Assets/Icons/book.svg", height: 20),
+                  const SizedBox(width: 6),
+                  Flexible(
+                    child: Text(
+                      "READ BOOK",
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Theme.of(context).colorScheme.background,
-                        letterSpacing: 1.5,
+                        letterSpacing: 1.2,
                       ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            width: 3,
-            height: 30,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.background,
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-          Row(
-            children: [
-              SvgPicture.asset("Assets/Icons/play.svg"),
-              SizedBox(width: 10),
-              Text(
-                "PLAY BOOK",
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.background,
-                      letterSpacing: 1.2,
                     ),
+                  ),
+                ],
               ),
-            ],
+            ),
+          ),
+
+          // Vertical Divider
+          Container(
+            width: 2,
+            height: 30,
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            color: Theme.of(context).colorScheme.background,
+          ),
+
+          // PLAY BOOK
+          Expanded(
+            child: InkWell(
+              onTap: () {
+                // Future: handle audio play here
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SvgPicture.asset("Assets/Icons/play.svg", height: 20),
+                  const SizedBox(width: 6),
+                  Flexible(
+                    child: Text(
+                      "PLAY BOOK",
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.background,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),

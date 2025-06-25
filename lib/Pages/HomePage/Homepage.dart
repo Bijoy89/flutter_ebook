@@ -5,9 +5,11 @@ import 'package:flutter_ebook/Pages/HomePage/Widgets/AppBar.dart';
 import 'package:flutter_ebook/Pages/HomePage/Widgets/CategoryWidget.dart';
 import 'package:flutter_ebook/Pages/HomePage/Widgets/MyinputTextField.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 import '../../Components/BookTile.dart';
 import '../../Models/Data.dart';
+import '../BookDetails/BookDetails.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -134,6 +136,7 @@ class HomePage extends StatelessWidget {
                               coverUrl: e.coverUrl!,
                               onTap: () {
                                 // Handle book tap
+                                Get.to(BookDetails(book: e,));
                               },
                             ),
                           )

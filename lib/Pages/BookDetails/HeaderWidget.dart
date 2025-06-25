@@ -4,7 +4,15 @@ import 'package:flutter_svg/svg.dart';
 import '../../Components/BackButton.dart';
 
 class HeaderWidget extends StatelessWidget {
-  const HeaderWidget({super.key});
+  final String coverurl;
+  final String title;
+  final String author;
+  final String description;
+  final String rating;
+  final String pages;
+  final String language;
+  final String audioLen;
+  const HeaderWidget({super.key, required this.coverurl, required this.title, required this.author, required this.description, required this.rating, required this.pages, required this.language, required this.audioLen});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +36,7 @@ class HeaderWidget extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: Image.asset(
-                "Assets/Images/9781849908467-jacket-large.jpg",
+                coverurl,
                 width: 170,
               ),
             ),
@@ -36,14 +44,16 @@ class HeaderWidget extends StatelessWidget {
         ),
         SizedBox(height: 30),
         Text(
-          "War and Peace",
+          title,
+          maxLines: 1,
+          textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.headlineMedium
               ?.copyWith(
             color: Theme.of(context).colorScheme.background,
           ),
         ),
         Text(
-          "Author: Leo Tolstoy",
+          "Author: $author",
           style: Theme.of(context).textTheme.labelMedium
               ?.copyWith(
             color: Theme.of(context).colorScheme.background,
@@ -51,7 +61,8 @@ class HeaderWidget extends StatelessWidget {
         ),
         SizedBox(height: 10),
         Text(
-          "War and Peace is a literary work by the Russian author Leo Tolstoy. Set during the Napoleonic Wars, the work comprises both a fictional narrative and chapters in which Tolstoy discusses history and philosophy.",
+          description,
+          maxLines: 2,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.labelSmall?.copyWith(
             color: Theme.of(context).colorScheme.background,
@@ -66,20 +77,14 @@ class HeaderWidget extends StatelessWidget {
               children: [
                 Text(
                   "Rating",
-                  style: Theme.of(context).textTheme.labelSmall
-                      ?.copyWith(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.background,
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: Theme.of(context).colorScheme.background,
                   ),
                 ),
                 Text(
-                  "5.0",
-                  style: Theme.of(context).textTheme.bodyMedium
-                      ?.copyWith(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.background,
+                  rating,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.background,
                   ),
                 ),
               ],
@@ -88,20 +93,14 @@ class HeaderWidget extends StatelessWidget {
               children: [
                 Text(
                   "Pages",
-                  style: Theme.of(context).textTheme.bodyMedium
-                      ?.copyWith(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.background,
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: Theme.of(context).colorScheme.background,
                   ),
                 ),
                 Text(
-                  "203",
-                  style: Theme.of(context).textTheme.bodyMedium
-                      ?.copyWith(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.background,
+                  pages,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.background,
                   ),
                 ),
               ],
@@ -110,20 +109,14 @@ class HeaderWidget extends StatelessWidget {
               children: [
                 Text(
                   "Language",
-                  style: Theme.of(context).textTheme.bodyMedium
-                      ?.copyWith(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.background,
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: Theme.of(context).colorScheme.background,
                   ),
                 ),
                 Text(
-                  "ENG",
-                  style: Theme.of(context).textTheme.bodyMedium
-                      ?.copyWith(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.background,
+                  language,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.background,
                   ),
                 ),
               ],
@@ -132,26 +125,21 @@ class HeaderWidget extends StatelessWidget {
               children: [
                 Text(
                   "Audio",
-                  style: Theme.of(context).textTheme.labelSmall
-                      ?.copyWith(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.background,
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: Theme.of(context).colorScheme.background,
                   ),
                 ),
                 Text(
-                  "2 hr",
-                  style: Theme.of(context).textTheme.bodyMedium
-                      ?.copyWith(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.background,
+                  audioLen,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.background,
                   ),
                 ),
               ],
             ),
           ],
         ),
+
       ],
     );
   }

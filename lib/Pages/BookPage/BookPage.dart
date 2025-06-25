@@ -5,18 +5,19 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 import '../../Components/BackButton.dart';
 
-class BookPage extends StatefulWidget {
-  const BookPage({super.key});
-
-  @override
-  State<BookPage> createState() => _BookPageState();
-}
-
-class _BookPageState extends State<BookPage> {
+class BookPage extends StatelessWidget {
+  final String? bookUrl;
+  const BookPage({super.key, this.bookUrl});
 
   @override
   Widget build(BuildContext context) {
     PdfController pdfController = Get.put(PdfController());
+
+    // Use a default PDF URL if none provided
+    final url = (bookUrl == null || bookUrl!.isEmpty)
+        ? 'https://cdn.syncfusion.com/content/PDFViewer/flutter-succinctly.pdf'
+        : bookUrl!;
+
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(color: Theme.of(context).colorScheme.background),
@@ -29,13 +30,17 @@ class _BookPageState extends State<BookPage> {
         ),
         centerTitle: true,
       ),
-      floatingActionButton:FloatingActionButton(onPressed: (){
-        pdfController.pdfViewerKey.currentState?.openBookmarkView();
-      },child: Icon(Icons.bookmark,color: Theme.of(context).colorScheme.background,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          pdfController.pdfViewerKey.currentState?.openBookmarkView();
+        },
+        child: Icon(
+          Icons.bookmark,
+          color: Theme.of(context).colorScheme.background,
+        ),
       ),
-      ),
-      body:SfPdfViewer.network(
-        'https://cdn.syncfusion.com/content/PDFViewer/flutter-succinctly.pdf',
+      body: SfPdfViewer.network(
+        url,
         key: pdfController.pdfViewerKey,
       ),
     );

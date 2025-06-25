@@ -5,9 +5,11 @@ import 'package:flutter_ebook/Pages/BookDetails/HeaderWidget.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../Config/Colors.dart';
+import '../../Models/bookmodel.dart';
 
 class BookDetails extends StatelessWidget {
-  const BookDetails({super.key});
+  final BookModel book;
+  const BookDetails({super.key, required this.book});
 
   @override
   Widget build(BuildContext context) {
@@ -16,12 +18,26 @@ class BookDetails extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              padding: EdgeInsets.all(20),
-              //height: 500,
+              padding: const EdgeInsets.all(20),
               color: primaryColor,
-              child: Row(children: [Expanded(child: HeaderWidget())]),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: HeaderWidget(
+                      coverurl: book.coverUrl ?? '',
+                      title: book.title ?? 'No Title',
+                      author: book.author ?? 'Unknown Author',
+                      description: book.description ?? 'No description available.',
+                      rating: book.rating ?? '0.0',
+                      pages: book.pages?.toString() ?? '0',
+                      language: book.language ?? 'N/A',
+                      audioLen: book.audioLen ?? '0',
+                    ),
+                  ),
+                ],
+              ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.all(10),
               child: Column(
@@ -35,18 +51,18 @@ class BookDetails extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Row(
                     children: [
                       Flexible(
                         child: Text(
-                          "War and Peace is a literary work by the Russian author Leo Tolstoy. Set during the Napoleonic Wars, the work comprises both a fictional narrative and chapters in which Tolstoy discusses history and philosophy.",
+                          book.description ?? 'No description available.',
                           style: Theme.of(context).textTheme.labelMedium,
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Row(
                     children: [
                       Text(
@@ -55,19 +71,19 @@ class BookDetails extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Row(
                     children: [
                       Flexible(
                         child: Text(
-                          "Count Lev Nikolayevich Tolstoy, usually referred to in English as Leo Tolstoy, was a Russian writer. He is regarded as one of the greatest and most influential authors of all time.",
+                          book.aboutAuthor ?? 'No author information available.',
                           style: Theme.of(context).textTheme.labelMedium,
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 30),
-                  BookActionButton(),
+                  const SizedBox(height: 30),
+                  BookActionButton(bookUrl: book.bookurl ?? ''),
                 ],
               ),
             ),
