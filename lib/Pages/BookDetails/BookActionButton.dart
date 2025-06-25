@@ -10,11 +10,13 @@ class BookActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return            Container(
       height: 60,
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary,
+        color: Theme.of(
+          context,
+        ).colorScheme.primary,
         borderRadius: BorderRadius.circular(15),
       ),
       child: Row(
@@ -22,16 +24,19 @@ class BookActionButton extends StatelessWidget {
         children: [
           InkWell(
             onTap: () {
-              Get.to(() => const BookPage()); // Proper navigation to BookPage
+             Get.to(BookPage()); // Add your read book action here
             },
             child: Row(
               children: [
                 SvgPicture.asset("Assets/Icons/book.svg"),
-                const SizedBox(width: 10),
+                SizedBox(width: 10),
                 Text(
                   "READ BOOK",
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.background,
+                  style: Theme.of(context).textTheme.bodyLarge
+                      ?.copyWith(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.background,
                     letterSpacing: 1.5,
                   ),
                 ),
@@ -49,11 +54,14 @@ class BookActionButton extends StatelessWidget {
           Row(
             children: [
               SvgPicture.asset("Assets/Icons/play.svg"),
-              const SizedBox(width: 10),
+              SizedBox(width: 10),
               Text(
                 "PLAY BOOK",
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.background,
+                style: Theme.of(context).textTheme.bodyLarge
+                    ?.copyWith(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.background,
                   letterSpacing: 1.2,
                 ),
               ),
