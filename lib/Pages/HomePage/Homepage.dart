@@ -156,8 +156,10 @@ class HomePage extends StatelessWidget {
                   SizedBox(height: 10),
                   Column(
                     children: bookData
-                        .map(
-                          (e) => BookTile(
+                        .map((e) => BookTile(
+                      ontap: () {
+                        Get.to(BookDetails(book: e));
+                      },
                             coverUrl: e.coverUrl!,
                             title: e.title!,
                             author: e.author!,
@@ -166,14 +168,14 @@ class HomePage extends StatelessWidget {
                             TotalRatings: e.numberofRating!,
                           ),
                         )
-                        .toList(),
+                        .toList()),
+      ],
                   ),
-                ],
-              ),
             ),
-          ],
-        ),
-      ),
+              ],
+    ),
+    ),
     );
+
   }
 }

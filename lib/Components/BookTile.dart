@@ -8,6 +8,8 @@ class BookTile extends StatelessWidget {
   final int price;
   final String rating;
   final int TotalRatings;
+  final VoidCallback ontap;
+
   const BookTile({
     super.key,
     required this.coverUrl,
@@ -15,6 +17,7 @@ class BookTile extends StatelessWidget {
     required this.author,
     required this.price,
     required this.rating,
+    required this.ontap,
     required this.TotalRatings,
   });
 
@@ -23,9 +26,7 @@ class BookTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15),
       child: InkWell(
-        onTap: () {
-          // Handle tap for Navigation
-        },
+        onTap: ontap,
         child: Container(
           padding: EdgeInsets.all(10),
           decoration: BoxDecoration(
