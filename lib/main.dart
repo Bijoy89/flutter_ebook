@@ -1,5 +1,6 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ebook/Pages/SplacePage/SplacePage.dart';
 import 'package:flutter_ebook/Pages/WelcomePage.dart';
 import 'package:get/get.dart';
 
@@ -18,8 +19,8 @@ class flutter_ebookmain extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'E-Book Store',
       theme: lightTheme,
-      home: const Welcomepage(),
-
+      //home: const Welcomepage(),
+        home:SplacePage(),
     );
   }
 }
