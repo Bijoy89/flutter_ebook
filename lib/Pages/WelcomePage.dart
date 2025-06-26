@@ -86,7 +86,7 @@ class Welcomepage extends StatelessWidget {
                             ),
                             const SizedBox(height: 40),
                             PrimaryButton(
-                              btnName: "Continue",
+                              btnName: "LOGIN WITH GOOGLE",
                               onTap: () {
                                 Get.offAll(HomePage());
                               },

@@ -19,7 +19,7 @@ class flutter_ebookmain extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'E-Book Store',
       theme: lightTheme,
-      //home: const Welcomepage(),
+     // home: const Welcomepage(),
         home:SplacePage(),
     );
   }
