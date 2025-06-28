@@ -1,8 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_ebook/Pages/HomePage/Homepage.dart';
 import 'package:flutter_ebook/Pages/WelcomePage.dart';
 import 'package:get/get.dart';
 
 class SplaceController extends GetxController
 {
+  final auth=FirebaseAuth.instance;
 
   @override
   void onInit() {
@@ -14,7 +17,12 @@ class SplaceController extends GetxController
   void splaceController()
   {
     Future.delayed(Duration(seconds: 4), () {
-      Get.offAll(Welcomepage());
+      if(auth.currentUser!=null){
+        Get.offAll(HomePage());
+      }
+      else{
+        Get.offAll(Welcomepage());
+      }
     });
   }
 }
