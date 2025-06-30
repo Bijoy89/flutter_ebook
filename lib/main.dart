@@ -13,6 +13,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   //runApp(DevicePreview(builder: (context) => flutter_ebookmain()));
   runApp(const flutter_ebookmain());
 }
