@@ -21,7 +21,7 @@ class BookActionButton extends StatelessWidget {
           // READ BOOK
           Expanded(
             child: InkWell(
-              onTap: () => Get.to(BookPage(bookUrl: bookUrl)),
+              onTap: () => Get.to(() => BookPage(bookUrl: bookUrl)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -30,40 +30,6 @@ class BookActionButton extends StatelessWidget {
                   Flexible(
                     child: Text(
                       "READ BOOK",
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.background,
-                        letterSpacing: 1.2,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // Vertical Divider
-          Container(
-            width: 2,
-            height: 30,
-            margin: const EdgeInsets.symmetric(horizontal: 8),
-            color: Theme.of(context).colorScheme.background,
-          ),
-
-          // PLAY BOOK
-          Expanded(
-            child: InkWell(
-              onTap: () {
-                // Future: handle audio play here
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SvgPicture.asset("Assets/Icons/play.svg", height: 20),
-                  const SizedBox(width: 6),
-                  Flexible(
-                    child: Text(
-                      "PLAY BOOK",
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Theme.of(context).colorScheme.background,

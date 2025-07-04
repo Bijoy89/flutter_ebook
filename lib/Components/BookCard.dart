@@ -8,8 +8,8 @@ class BookCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return           Padding(
-      padding:  EdgeInsets.only(right: 20),
+    return Padding(
+      padding: EdgeInsets.only(right: 20),
       child: InkWell(
         onTap: onTap,
         child: SizedBox(
@@ -19,19 +19,36 @@ class BookCard extends StatelessWidget {
               Container(
                 decoration: BoxDecoration(
                   boxShadow: [
-                  BoxShadow(
-                    color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
-                    spreadRadius: 2,//shadows spread
-                    blurRadius: 8, //Shadow blur
-                    offset: Offset(2, 2), // changes position of shadow
-                  ),
-                ],
+                    BoxShadow(
+                      color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                      spreadRadius: 2,
+                      blurRadius: 8,
+                      offset: Offset(2, 2),
+                    ),
+                  ],
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: Image.asset(
-                  coverUrl,
+                  child: coverUrl.isNotEmpty
+                      ? Image.network(
+                    coverUrl,
                     width: 120,
+                    height: 180,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        width: 120,
+                        height: 180,
+                        color: Colors.grey.shade300,
+                        child: Icon(Icons.broken_image, size: 40),
+                      );
+                    },
+                  )
+                      : Container(
+                    width: 120,
+                    height: 180,
+                    color: Colors.grey.shade300,
+                    child: Icon(Icons.image_not_supported, size: 40),
                   ),
                 ),
               ),

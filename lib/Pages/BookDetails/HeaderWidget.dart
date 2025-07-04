@@ -12,7 +12,18 @@ class HeaderWidget extends StatelessWidget {
   final String pages;
   final String language;
   final String audioLen;
-  const HeaderWidget({super.key, required this.coverurl, required this.title, required this.author, required this.description, required this.rating, required this.pages, required this.language, required this.audioLen});
+
+  const HeaderWidget({
+    super.key,
+    required this.coverurl,
+    required this.title,
+    required this.author,
+    required this.description,
+    required this.rating,
+    required this.pages,
+    required this.language,
+    required this.audioLen,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +46,24 @@ class HeaderWidget extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: Image.asset(
+              child: coverurl.isNotEmpty
+                  ? Image.network(
                 coverurl,
                 width: 170,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    width: 170,
+                    height: 250,
+                    color: Colors.grey.shade300,
+                    child: Icon(Icons.broken_image, size: 50),
+                  );
+                },
+              )
+                  : Container(
+                width: 170,
+                height: 250,
+                color: Colors.grey.shade300,
+                child: Icon(Icons.image_not_supported, size: 50),
               ),
             ),
           ],
@@ -47,15 +73,13 @@ class HeaderWidget extends StatelessWidget {
           title,
           maxLines: 1,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headlineMedium
-              ?.copyWith(
+          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
             color: Theme.of(context).colorScheme.background,
           ),
         ),
         Text(
           "Author: $author",
-          style: Theme.of(context).textTheme.labelMedium
-              ?.copyWith(
+          style: Theme.of(context).textTheme.labelMedium?.copyWith(
             color: Theme.of(context).colorScheme.background,
           ),
         ),
@@ -69,77 +93,34 @@ class HeaderWidget extends StatelessWidget {
           ),
         ),
         SizedBox(height: 10),
-
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              children: [
-                Text(
-                  "Rating",
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: Theme.of(context).colorScheme.background,
-                  ),
-                ),
-                Text(
-                  rating,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.background,
-                  ),
-                ),
-              ],
-            ),
-            Column(
-              children: [
-                Text(
-                  "Pages",
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: Theme.of(context).colorScheme.background,
-                  ),
-                ),
-                Text(
-                  pages,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.background,
-                  ),
-                ),
-              ],
-            ),
-            Column(
-              children: [
-                Text(
-                  "Language",
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: Theme.of(context).colorScheme.background,
-                  ),
-                ),
-                Text(
-                  language,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.background,
-                  ),
-                ),
-              ],
-            ),
-            Column(
-              children: [
-                Text(
-                  "Audio",
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: Theme.of(context).colorScheme.background,
-                  ),
-                ),
-                Text(
-                  audioLen,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.background,
-                  ),
-                ),
-              ],
-            ),
+            _infoColumn("Rating", rating, context),
+            _infoColumn("Pages", pages, context),
+            _infoColumn("Language", language, context),
+            _infoColumn("Audio", audioLen, context),
           ],
         ),
+      ],
+    );
+  }
 
+  Widget _infoColumn(String label, String value, BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          label,
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+            color: Theme.of(context).colorScheme.background,
+          ),
+        ),
+        Text(
+          value,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Theme.of(context).colorScheme.background,
+          ),
+        ),
       ],
     );
   }
