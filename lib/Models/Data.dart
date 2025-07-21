@@ -65,6 +65,8 @@ var bookData=[
    rating: "5.0",
    numberofRating: 10,
    category: "Mystery",
+   pages: 1289,
+   language: "English",
    price: 100,
  ),
   BookModel(
@@ -79,6 +81,8 @@ var bookData=[
     rating: "4.7",
     numberofRating: 10,
     category: "Novel",
+    pages: 101,
+    language: "English",
     price: 80,
   ),
   BookModel(
@@ -93,6 +97,8 @@ var bookData=[
     rating: "5.0",
     numberofRating: 10,
     category: "Novel",
+    pages: 330,
+    language: "English",
     price: 95,
   ),
   BookModel(
@@ -107,6 +113,8 @@ var bookData=[
     rating: "5.0",
     numberofRating: 10,
     category: "Romance",
+    pages: 816,
+    language: "English",
     price: 76,
   ),
 
