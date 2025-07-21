@@ -4,6 +4,9 @@ import 'package:flutter_ebook/Controller/AuthController.dart';
 import 'package:flutter_ebook/Pages/HomePage/Homepage.dart';
 import 'package:get/get.dart';
 
+import 'LoginPage.dart';
+import 'RegistrationPage.dart';
+
 class Welcomepage extends StatelessWidget {
   const Welcomepage({super.key});
 
@@ -65,34 +68,21 @@ class Welcomepage extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(height: 30),
-                            Text(
-                              "Disclaimer",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelMedium
-                                  ?.copyWith(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .primary,
-                                fontWeight: FontWeight.w600,
-                              ),
+                            PrimaryButton(
+                              btnName: "LOGIN",
+                              onTap: () => Get.to(() => LoginPage()),
                             ),
-                            const SizedBox(height: 10),
-                            Text(
-                              "Readify provides access to books and audiobooks for informational and entertainment purposes only. We do not own or claim rights to third-party content unless stated. All trademarks and content belong to their respective owners.\n\nReadify is not liable for any errors, inaccuracies, or damages resulting from use of the app. By using Readify, you agree to our terms and policies.",
-                              textAlign: TextAlign.start,
-                              style: Theme.of(context).textTheme.labelSmall,
+                            const SizedBox(height: 20),
+                            PrimaryButton(
+                              btnName: "REGISTER",
+                              onTap: () => Get.to(() => RegistrationPage()),
                             ),
-                            const SizedBox(height: 40),
+                            const SizedBox(height: 20),
                             PrimaryButton(
                               btnName: "LOGIN WITH GOOGLE",
-                              onTap: () {
-                                authController.signInWithGoogle();
-                                //Get.offAll(HomePage());
-                              },
+                              onTap: () => authController.signInWithGoogle(),
                             ),
                           ],
                         ),
