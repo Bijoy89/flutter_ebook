@@ -73,11 +73,13 @@ class Welcomepage extends StatelessWidget {
                             PrimaryButton(
                               btnName: "LOGIN",
                               onTap: () => Get.to(() => LoginPage()),
+                              showGoogleIcon: false,
                             ),
                             const SizedBox(height: 20),
                             PrimaryButton(
                               btnName: "REGISTER",
                               onTap: () => Get.to(() => RegistrationPage()),
+                              showGoogleIcon: false,
                             ),
                             const SizedBox(height: 20),
                             PrimaryButton(

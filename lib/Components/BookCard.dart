@@ -4,12 +4,20 @@ class BookCard extends StatelessWidget {
   final String coverUrl;
   final String title;
   final VoidCallback onTap;
-  const BookCard({super.key, required this.coverUrl, required this.title, required this.onTap});
+
+  const BookCard({
+    super.key,
+    required this.coverUrl,
+    required this.title,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Padding(
-      padding: EdgeInsets.only(right: 20),
+      padding: const EdgeInsets.only(right: 20),
       child: InkWell(
         onTap: onTap,
         child: SizedBox(
@@ -20,10 +28,10 @@ class BookCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   boxShadow: [
                     BoxShadow(
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                      color: theme.colorScheme.primary.withOpacity(0.2),
                       spreadRadius: 2,
                       blurRadius: 8,
-                      offset: Offset(2, 2),
+                      offset: const Offset(2, 2),
                     ),
                   ],
                 ),
@@ -40,7 +48,7 @@ class BookCard extends StatelessWidget {
                         width: 120,
                         height: 180,
                         color: Colors.grey.shade300,
-                        child: Icon(Icons.broken_image, size: 40),
+                        child: const Icon(Icons.broken_image, size: 40),
                       );
                     },
                   )
@@ -48,14 +56,14 @@ class BookCard extends StatelessWidget {
                     width: 120,
                     height: 180,
                     color: Colors.grey.shade300,
-                    child: Icon(Icons.image_not_supported, size: 40),
+                    child: const Icon(Icons.image_not_supported, size: 40),
                   ),
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Text(
                 title,
-                style: Theme.of(context).textTheme.bodyMedium,
+                style: theme.textTheme.bodyMedium,
                 maxLines: 1,
                 textAlign: TextAlign.center,
               ),

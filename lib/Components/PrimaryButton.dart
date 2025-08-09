@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class PrimaryButton extends StatelessWidget {
   final String btnName;
   final VoidCallback onTap;
-  const PrimaryButton({super.key, required this.btnName, required this.onTap});
+  final bool showGoogleIcon;
+
+  const PrimaryButton({
+    super.key,
+    required this.btnName,
+    required this.onTap,
+    this.showGoogleIcon = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,13 +27,13 @@ class PrimaryButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            /// Google Icon (SVG)
-            SvgPicture.asset(
-              "Assets/Icons/google.svg",
-              height: 24,
-              width: 24,
-            ),
-            const SizedBox(width: 10),
+            if (showGoogleIcon)
+              SvgPicture.asset(
+                "Assets/Icons/google.svg",
+                height: 24,
+                width: 24,
+              ),
+            if (showGoogleIcon) SizedBox(width: 10),
             Text(
               btnName,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(

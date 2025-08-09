@@ -48,6 +48,30 @@ class BookModel {
     this.pdfUrl,
   });
 
+  factory BookModel.fromMap(Map<String, dynamic> map, String docId) {
+    return BookModel(
+      id: docId,
+      title: map['title'],
+      author: map['author'],
+      imageUrl: map['imageUrl'],
+      bookurl: map['pdfUrl'],
+      price: map['price'],
+      rating: map['rating']?.toString(), // Force to string for consistency
+      numberofRating: (map['numberofRating'] is int)
+          ? map['numberofRating']
+          : (map['numberofRating'] is double)
+          ? (map['numberofRating'] as double).toInt()
+          : 0, // fallback
+      description: map['description'],
+      aboutAuthor: map['aboutAuthor'],
+      pages: map['pages'],
+      language: map['language'],
+      audioLen: map['audioLen'],
+    );
+  }
+
+
+
   BookModel.fromJson(Map<String, dynamic> json, [String? docId]) {
     id = docId ?? json['id'];
     title = json['title'];

@@ -5,7 +5,15 @@ import '../../Pages/BookPage/BookPage.dart';
 
 class BookActionButton extends StatelessWidget {
   final String bookUrl;
-  const BookActionButton({super.key, required this.bookUrl});
+  final String bookId;
+  final VoidCallback onRead;
+
+  const BookActionButton({
+    super.key,
+    required this.bookUrl,
+    required this.bookId,
+    required this.onRead,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +26,12 @@ class BookActionButton extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // READ BOOK
           Expanded(
             child: InkWell(
-              onTap: () => Get.to(() => BookPage(bookUrl: bookUrl)),
+              onTap: () {
+                onRead(); // Mark as read
+                Get.to(() => BookPage(bookUrl: bookUrl));
+              },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
