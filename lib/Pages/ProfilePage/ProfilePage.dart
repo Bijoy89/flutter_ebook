@@ -6,6 +6,8 @@ import 'package:flutter_ebook/Pages/AddNewBook/AddNewBook.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
 import '../../Config/Colors.dart';
 import '../../Models/bookmodel.dart';
 import '../../Services/BookService.dart';
@@ -28,17 +30,19 @@ class _ProfilePageState extends State<ProfilePage> {
 
   List<BookModel> readBooks = [];
   List<BookModel> uploadedBooks = [];
+  List<BookModel> favoriteBooks = [];
 
   @override
   void initState() {
     super.initState();
     uid = FirebaseAuth.instance.currentUser!.uid;
     _loadUserData();
+    _loadFavoriteBooks();
   }
 
   Future<void> _loadUserData() async {
     final doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
-    final data = doc.data() ?? {};
+    final data = doc.data() as Map<String, dynamic>? ?? {};
 
     role = (data['role'] ?? 'user').toString().toLowerCase().trim();
     isSubscribed = data['isSubscribed'] ?? false;
@@ -50,7 +54,7 @@ class _ProfilePageState extends State<ProfilePage> {
     }
 
     final fetchedReadBooks = await bookService.getBooksByIds(readBookIds);
-    // listen to uploaded books stream
+
     bookService.getUserUploadedBooks(uid).listen((uploaded) {
       setState(() {
         uploadedBooks = uploaded;
@@ -65,28 +69,36 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
+  void _loadFavoriteBooks() {
+    bookService.getFavoriteBooksStream(uid).listen((favBooks) {
+      setState(() {
+        favoriteBooks = favBooks;
+      });
+    });
+  }
+
   List<BookModel> get combinedBooks {
     if (role == 'admin') {
-      // admin shows all books (handled separately in StreamBuilder)
       return [];
     }
     if (isSubscribed) {
       final all = [...readBooks, ...uploadedBooks];
       final seen = <String>{};
-      return all.where((b) => seen.add(b.id ?? '')).toList();
+      return all.where((b) => b.id != null && seen.add(b.id!)).toList();
     } else {
-      // only uploaded books for unsubscribed users
       return uploadedBooks;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       floatingActionButton: (role == 'admin')
           ? FloatingActionButton(
         onPressed: () => Get.to(() => AddNewBookPage()),
-        child: Icon(Icons.add, color: Theme.of(context).colorScheme.background),
+        child: Icon(Icons.add, color: theme.colorScheme.background),
       )
           : null,
       body: SingleChildScrollView(
@@ -94,7 +106,7 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             Container(
               padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
-              color: Theme.of(context).colorScheme.primary,
+              color: theme.colorScheme.primary,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -110,8 +122,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             MyBackButton(),
                             Text(
                               "Profile",
-                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                color: Theme.of(context).colorScheme.background,
+                              style: theme.textTheme.bodyLarge?.copyWith(
+                                color: theme.colorScheme.background,
                               ),
                             ),
                             IconButton(
@@ -120,38 +132,53 @@ class _ProfilePageState extends State<ProfilePage> {
                               },
                               icon: Icon(
                                 Icons.exit_to_app,
-                                color: Theme.of(context).colorScheme.background,
+                                color: theme.colorScheme.background,
                               ),
                             )
                           ],
                         ),
                         const SizedBox(height: 60),
+                        // SVG with fallback icon if error
                         Container(
-                          padding: const EdgeInsets.all(5),
+                          width: 120,
+                          height: 120,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100),
+                            shape: BoxShape.circle,
                             border: Border.all(
+                              color: theme.colorScheme.background,
                               width: 2,
-                              color: Theme.of(context).colorScheme.background,
                             ),
                           ),
-                          child: const CircleAvatar(
-                            radius: 60,
-                            backgroundImage: AssetImage("Assets/Images/default_user.png"),
+                          child: ClipOval(
+                            child: SvgPicture.asset(
+                              'Assets/Icons/deafult_user.svg',
+                              width: 40,
+                              height: 40,
+                              fit: BoxFit.cover,
+                              placeholderBuilder: (context) => Center(
+                                child: Icon(
+                                  Icons.person,
+                                  size: 40,
+                                  color: theme.colorScheme.background,
+                                ),
+                              ),
+                              // This handles if svg fails to load
+                              // alternatively you can use a try/catch when loading the asset,
+                              // but placeholderBuilder is simpler here
+                            ),
                           ),
                         ),
                         const SizedBox(height: 20),
                         Text(
                           role == 'admin' ? 'Admin' : 'User',
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: Theme.of(context).colorScheme.background,
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            color: theme.colorScheme.background,
                           ),
                         ),
-
                         Text(
                           FirebaseAuth.instance.currentUser?.email ?? '',
-                          style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.onPrimaryContainer,
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            color: theme.colorScheme.onPrimaryContainer,
                           ),
                         ),
                       ],
@@ -164,11 +191,39 @@ class _ProfilePageState extends State<ProfilePage> {
               padding: const EdgeInsets.all(10),
               child: Column(
                 children: [
+                  if (favoriteBooks.isNotEmpty) ...[
+                    Row(
+                      children: [
+                        Text(
+                          "Favorite Books",
+                          style: theme.textTheme.labelMedium,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Column(
+                      children: favoriteBooks
+                          .map(
+                            (e) => BookTile(
+                          coverUrl: e.imageUrl ?? '',
+                          title: e.title ?? '',
+                          author: e.author ?? '',
+                          price: e.price ?? 0,
+                          rating: e.rating?.toString() ?? '0',
+                          totalRatings: e.numberofRating ?? 0,
+                          onTap: () => Get.to(() => BookDetails(book: e, role: role)),
+                          showEditDelete: role == 'admin',
+                        ),
+                      )
+                          .toList(),
+                    ),
+                    const SizedBox(height: 20),
+                  ],
                   Row(
                     children: [
                       Text(
                         role == 'admin' ? "All Books" : "Your Books",
-                        style: Theme.of(context).textTheme.labelMedium,
+                        style: theme.textTheme.labelMedium,
                       ),
                     ],
                   ),
@@ -192,7 +247,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             title: e.title ?? '',
                             author: e.author ?? '',
                             price: e.price ?? 0,
-                            rating: e.rating ?? '0',
+                            rating: e.rating?.toString() ?? '0',
                             totalRatings: e.numberofRating ?? 0,
                             onTap: () => Get.to(() => BookDetails(book: e, role: role)),
                             showEditDelete: true,
@@ -212,7 +267,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         title: e.title ?? '',
                         author: e.author ?? '',
                         price: e.price ?? 0,
-                        rating: e.rating ?? '0',
+                        rating: e.rating?.toString() ?? '0',
                         totalRatings: e.numberofRating ?? 0,
                         onTap: () => Get.to(() => BookDetails(book: e, role: role)),
                         showEditDelete: false,

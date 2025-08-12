@@ -29,6 +29,19 @@ class _AddNewBookPageState extends State<AddNewBookPage> {
   final ImageController imageController = Get.put(ImageController());
   final PdfController pdfController = Get.put(PdfController());
 
+  String selectedCategory = 'Fiction';
+
+  final List<String> categories = [
+    'Fiction',
+    'Non-Fiction',
+    'Science',
+    'History',
+    'Technology',
+    'Biography',
+    'Fantasy',
+    'Other',
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -44,6 +57,7 @@ class _AddNewBookPageState extends State<AddNewBookPage> {
       bookController.language.text = book.language ?? '';
       bookController.audioLen.text = book.audioLen ?? '';
       bookController.rating.text = book.rating ?? '';
+      selectedCategory = book.category ?? 'Fiction';
 
       imageController.imageUrl.value = book.imageUrl ?? '';
       imageController.imagePublicId.value = book.imagePublicId ?? '';
@@ -169,7 +183,39 @@ class _AddNewBookPageState extends State<AddNewBookPage> {
                   Padding(
                     padding: const EdgeInsets.all(10),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // CATEGORY DROPDOWN ADDED HERE
+                        Text(
+                          "Category",
+                          style: Theme.of(context).textTheme.labelLarge,
+                        ),
+                        const SizedBox(height: 8),
+                        DropdownButtonFormField<String>(
+                          value: selectedCategory,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                          ),
+                          items: categories
+                              .map((cat) => DropdownMenuItem(
+                            value: cat,
+                            child: Text(cat),
+                          ))
+                              .toList(),
+                          onChanged: (value) {
+                            if (value != null) {
+                              setState(() {
+                                selectedCategory = value;
+                              });
+                            }
+                          },
+                        ),
+                        const SizedBox(height: 10),
+
                         Row(
                           children: [
                             Flexible(
@@ -306,6 +352,9 @@ class _AddNewBookPageState extends State<AddNewBookPage> {
                                   imageController.imagePublicId.value = '';
                                   pdfController.pdfUrl.value = '';
                                   pdfController.pdfPublicId.value = '';
+                                  setState(() {
+                                    selectedCategory = 'Fiction';
+                                  });
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
@@ -356,13 +405,14 @@ class _AddNewBookPageState extends State<AddNewBookPage> {
                                         'price': int.tryParse(bookController.price.text.trim()) ?? 0,
                                         'pages': int.tryParse(bookController.pages.text.trim()) ?? 0,
                                         'language': bookController.language.text.trim(),
-                                        'audioLength': bookController.audioLen.text.trim(),
+                                        'audioLen': bookController.audioLen.text.trim(),
                                         'rating': double.tryParse(bookController.rating.text.trim()) ?? 0,
                                         'imageUrl': imageController.imageUrl.value,
                                         'imagePublicId': imageController.imagePublicId.value,
                                         'pdfUrl': pdfController.pdfUrl.value,
                                         'pdfPublicId': pdfController.pdfPublicId.value,
                                         'timestamp': timestamp,
+                                        'category': selectedCategory,
                                         'uid': userId,
                                       });
                                       Get.snackbar("Success", "Book updated successfully");
@@ -375,13 +425,14 @@ class _AddNewBookPageState extends State<AddNewBookPage> {
                                         'price': int.tryParse(bookController.price.text.trim()) ?? 0,
                                         'pages': int.tryParse(bookController.pages.text.trim()) ?? 0,
                                         'language': bookController.language.text.trim(),
-                                        'audioLength': bookController.audioLen.text.trim(),
+                                        'audioLen': bookController.audioLen.text.trim(),
                                         'rating': double.tryParse(bookController.rating.text.trim()) ?? 0,
                                         'imageUrl': imageController.imageUrl.value,
                                         'imagePublicId': imageController.imagePublicId.value,
                                         'pdfUrl': pdfController.pdfUrl.value,
                                         'pdfPublicId': pdfController.pdfPublicId.value,
                                         'timestamp': timestamp,
+                                        'category': selectedCategory,
                                         'uid': userId,
                                       });
                                       Get.snackbar("Success", "Book uploaded successfully");
@@ -392,6 +443,9 @@ class _AddNewBookPageState extends State<AddNewBookPage> {
                                     imageController.imagePublicId.value = '';
                                     pdfController.pdfUrl.value = '';
                                     pdfController.pdfPublicId.value = '';
+                                    setState(() {
+                                      selectedCategory = 'Fiction';
+                                    });
 
                                     Get.back();
                                   } catch (e) {
@@ -426,5 +480,4 @@ class _AddNewBookPageState extends State<AddNewBookPage> {
       ),
     );
   }
-
 }

@@ -8,12 +8,12 @@ class BookModel {
   String? audioLen;
   String? author;
   String? aboutAuthor;
-  String? imagePublicId;  // NEW
-  String? pdfPublicId;    // NEW
+  String? imagePublicId;
+  String? pdfPublicId;
 
   String? bookurl;
   String? audioUrl;
-  String? category;
+  String? category; // <--- added
   String? coverUrl;
   int? price;
   int? numberofRating;
@@ -36,9 +36,9 @@ class BookModel {
     this.aboutAuthor,
     this.bookurl,
     this.audioUrl,
-    this.category,
-    this.imagePublicId,  // NEW
-    this.pdfPublicId,    // NEW
+    this.category, // <--- added here
+    this.imagePublicId,
+    this.pdfPublicId,
     this.price,
     this.coverUrl,
     this.numberofRating,
@@ -56,21 +56,22 @@ class BookModel {
       imageUrl: map['imageUrl'],
       bookurl: map['pdfUrl'],
       price: map['price'],
-      rating: map['rating']?.toString(), // Force to string for consistency
+      rating: map['rating']?.toString(),
       numberofRating: (map['numberofRating'] is int)
           ? map['numberofRating']
           : (map['numberofRating'] is double)
           ? (map['numberofRating'] as double).toInt()
-          : 0, // fallback
+          : 0,
       description: map['description'],
       aboutAuthor: map['aboutAuthor'],
       pages: map['pages'],
       language: map['language'],
       audioLen: map['audioLen'],
+      category: map['category'], // <--- added here
+      imagePublicId: map['imagePublicId'],
+      pdfPublicId: map['pdfPublicId'],
     );
   }
-
-
 
   BookModel.fromJson(Map<String, dynamic> json, [String? docId]) {
     id = docId ?? json['id'];
@@ -82,11 +83,11 @@ class BookModel {
     audioLen = json['audioLen'] ?? json['audioLength'];
     author = json['author'];
     aboutAuthor = json['aboutAuthor'];
-    imagePublicId = json['imagePublicId'];  // NEW
-    pdfPublicId = json['pdfPublicId'];    // NEW
+    imagePublicId = json['imagePublicId'];
+    pdfPublicId = json['pdfPublicId'];
     bookurl = json['bookurl'] ?? json['pdfUrl'];
     audioUrl = json['audioUrl'];
-    category = json['category'];
+    category = json['category']; // <--- added here
     coverUrl = json['coverUrl'] ?? json['imageUrl'];
     price = int.tryParse(json['price'].toString());
     numberofRating = json['numberofRating'];
@@ -108,10 +109,10 @@ class BookModel {
       'author': author,
       'aboutAuthor': aboutAuthor,
       'bookurl': bookurl,
-      'imagePublicId': imagePublicId,  // NEW
-      'pdfPublicId': pdfPublicId,    // NEW
+      'imagePublicId': imagePublicId,
+      'pdfPublicId': pdfPublicId,
       'audioUrl': audioUrl,
-      'category': category,
+      'category': category, // <--- added here
       'price': price,
       'coverUrl': coverUrl,
       'numberofRating': numberofRating,

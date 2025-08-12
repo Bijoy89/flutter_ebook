@@ -35,7 +35,7 @@ class HomeAppBar extends StatelessWidget {
               context,
             ).colorScheme.background,
             child: const Text(
-              "N",
+              "P",
               style: TextStyle(
                   color: primaryColor),
             ),

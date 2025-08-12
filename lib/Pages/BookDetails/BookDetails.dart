@@ -9,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../Config/Colors.dart';
 import '../../Controller/BookController.dart';
 import '../../Models/bookmodel.dart';
+import '../../Services/BookService.dart';
 import '../AddNewBook/AddNewBook.dart';
 import '../SubscriptionDialog.dart';
 
@@ -25,38 +26,55 @@ class BookDetails extends StatefulWidget {
 class _BookDetailsState extends State<BookDetails> {
   late final BookController controller;
   bool? isSubscribed;
+  bool _isFavorite = false;
+  final BookService bookService = BookService();
+  final String _userId = FirebaseAuth.instance.currentUser!.uid;
 
   @override
   void initState() {
     super.initState();
     controller = Get.put(BookController());
     _initSubscription();
+    _loadFavoriteStatus();
   }
 
   void _initSubscription() async {
     final role = widget.role.toLowerCase().trim();
-    print("Checking subscription for role: $role");
     if (role == 'admin') {
-      print("Role is admin, setting isSubscribed = true");
       setState(() => isSubscribed = true);
       return;
     }
 
-    final uid = FirebaseAuth.instance.currentUser!.uid;
-    print("Fetching subscription status for user: $uid");
     try {
-      final doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      final doc = await FirebaseFirestore.instance.collection('users').doc(
+          _userId).get();
       final subscribed = doc['isSubscribed'] ?? false;
-      print("Subscription status from Firestore: $subscribed");
       setState(() {
         isSubscribed = subscribed;
       });
     } catch (e) {
-      print("Error fetching subscription: $e");
       setState(() {
-        isSubscribed = false; // fallback to false if error
+        isSubscribed = false;
       });
     }
+  }
+
+  void _loadFavoriteStatus() async {
+    final fav = await bookService.isFavorite(_userId, widget.book.id ?? '');
+    setState(() {
+      _isFavorite = fav;
+    });
+  }
+
+  void _toggleFavorite() async {
+    if (_isFavorite) {
+      await bookService.removeFavorite(_userId, widget.book.id ?? '');
+    } else {
+      await bookService.addFavorite(_userId, widget.book);
+    }
+    setState(() {
+      _isFavorite = !_isFavorite;
+    });
   }
 
   void _editBook(BookController controller, BookModel book) {
@@ -72,45 +90,47 @@ class _BookDetailsState extends State<BookDetails> {
     Get.to(() => AddNewBookPage(editBook: book));
   }
 
-  void _confirmDelete(BookController controller, BookModel book, BuildContext context) {
+  void _confirmDelete(BookController controller, BookModel book,
+      BuildContext context) {
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        title: const Text("Delete Book"),
-        content: const Text("Are you sure you want to delete this book?"),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel"),
+      builder: (_) =>
+          AlertDialog(
+            title: const Text("Delete Book"),
+            content: const Text("Are you sure you want to delete this book?"),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Cancel"),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.pop(context);
+                  try {
+                    await controller.deleteBook(book.id ?? '');
+                    Get.back();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text("Book deleted successfully")),
+                    );
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Delete failed: $e")),
+                    );
+                  }
+                },
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                child: const Text("Delete"),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () async {
-              Navigator.pop(context); // Close dialog
-              try {
-                await controller.deleteBook(book.id ?? '');
-                Get.back(); // Go back to previous list or page
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Book deleted successfully")),
-                );
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Delete failed: $e")),
-                );
-              }
-            },
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text("Delete"),
-          ),
-        ],
-      ),
     );
   }
 
   void markBookAsRead(BookModel book) async {
-    final uid = FirebaseAuth.instance.currentUser!.uid;
     final readRef = FirebaseFirestore.instance
         .collection('users')
-        .doc(uid)
+        .doc(_userId)
         .collection('readBooks')
         .doc(book.id);
 
@@ -129,7 +149,6 @@ class _BookDetailsState extends State<BookDetails> {
   @override
   Widget build(BuildContext context) {
     if (isSubscribed == null) {
-      // still loading subscription status
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );
@@ -137,13 +156,12 @@ class _BookDetailsState extends State<BookDetails> {
 
     final role = widget.role.toLowerCase().trim();
 
-    print("Rendering BookDetails. Role: $role, isSubscribed: $isSubscribed");
-
     Widget actionWidget;
     if (role == 'user' && !isSubscribed!) {
       actionWidget = ElevatedButton(
         onPressed: () {
-          Get.dialog(const SubscriptionDialog()).then((_) => _initSubscription());
+          Get.dialog(const SubscriptionDialog()).then((_) =>
+              _initSubscription());
         },
         child: const Text("Subscribe to Read"),
       );
@@ -173,21 +191,37 @@ class _BookDetailsState extends State<BookDetails> {
                 pages: widget.book.pages?.toString() ?? '0',
                 language: widget.book.language ?? 'N/A',
                 audioLen: widget.book.audioLen ?? '0',
+                isFavorite: _isFavorite,
+                onFavoriteToggle: _toggleFavorite,
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
+            // Removed favorite icon button here
+
             Padding(
               padding: const EdgeInsets.all(10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("About Book", style: Theme.of(context).textTheme.bodyMedium),
+                  Text("About Book", style: Theme
+                      .of(context)
+                      .textTheme
+                      .bodyMedium),
                   const SizedBox(height: 8),
-                  Text(widget.book.description ?? '', style: Theme.of(context).textTheme.labelMedium),
+                  Text(widget.book.description ?? '', style: Theme
+                      .of(context)
+                      .textTheme
+                      .labelMedium),
                   const SizedBox(height: 20),
-                  Text("About Author", style: Theme.of(context).textTheme.bodyMedium),
+                  Text("About Author", style: Theme
+                      .of(context)
+                      .textTheme
+                      .bodyMedium),
                   const SizedBox(height: 8),
-                  Text(widget.book.aboutAuthor ?? '', style: Theme.of(context).textTheme.labelMedium),
+                  Text(widget.book.aboutAuthor ?? '', style: Theme
+                      .of(context)
+                      .textTheme
+                      .labelMedium),
                   const SizedBox(height: 30),
 
                   actionWidget,
@@ -202,18 +236,27 @@ class _BookDetailsState extends State<BookDetails> {
                             icon: const Icon(Icons.edit),
                             label: const Text("Edit"),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Theme.of(context).colorScheme.primary,
-                              foregroundColor: Theme.of(context).colorScheme.background,
+                              backgroundColor: Theme
+                                  .of(context)
+                                  .colorScheme
+                                  .primary,
+                              foregroundColor: Theme
+                                  .of(context)
+                                  .colorScheme
+                                  .background,
                             ),
                           ),
                         ),
                         const SizedBox(width: 10),
                         Expanded(
                           child: ElevatedButton.icon(
-                            onPressed: () => _confirmDelete(controller, widget.book, context),
+                            onPressed: () =>
+                                _confirmDelete(
+                                    controller, widget.book, context),
                             icon: const Icon(Icons.delete),
                             label: const Text("Delete"),
-                            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red),
                           ),
                         ),
                       ],
