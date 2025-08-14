@@ -27,7 +27,7 @@ class CloudinaryService {
     print("Deleting Cloudinary file with publicId: $publicId");
     try {
       final response = await http.post(
-        Uri.parse('http://192.168.0.109:3000/delete'),  // Use your PC IP address here!
+        Uri.parse('http://192.168.0.106:3000/delete'),  // Use your PC IP address here!
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'publicId': publicId}),
       );

@@ -16,9 +16,9 @@ class SplaceController extends GetxController
 
   void splaceController()
   {
-    Future.delayed(Duration(seconds: 4), () {
+    Future.delayed(Duration(seconds: 8), () {
       if(auth.currentUser!=null){
-        Get.offAll(HomePage());
+        Get.offAll(HomePage(role: 'user',));
       }
       else{
         Get.offAll(Welcomepage());

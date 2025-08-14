@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 import '../../Components/BackButton.dart';
 
@@ -12,6 +11,8 @@ class HeaderWidget extends StatelessWidget {
   final String pages;
   final String language;
   final String audioLen;
+  final bool isFavorite;
+  final VoidCallback? onFavoriteToggle;
 
   const HeaderWidget({
     super.key,
@@ -23,24 +24,32 @@ class HeaderWidget extends StatelessWidget {
     required this.pages,
     required this.language,
     required this.audioLen,
+    this.isFavorite = false,
+    this.onFavoriteToggle,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: 50),
+        const SizedBox(height: 50),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            MyBackButton(),
-            SvgPicture.asset(
-              "Assets/Icons/heart.svg",
-              color: Theme.of(context).colorScheme.background,
+            const MyBackButton(),
+            // Replace SVG heart with favorite icon button (filled/outline)
+            IconButton(
+              icon: Icon(
+                isFavorite ? Icons.favorite : Icons.favorite_border,
+                color: isFavorite ? Colors.red : Colors.white,
+                size: 28,
+              ),
+              onPressed: onFavoriteToggle,
+              tooltip: isFavorite ? 'Remove from Favorites' : 'Add to Favorites',
             ),
           ],
         ),
-        SizedBox(height: 40),
+        const SizedBox(height: 40),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -55,7 +64,7 @@ class HeaderWidget extends StatelessWidget {
                     width: 170,
                     height: 250,
                     color: Colors.grey.shade300,
-                    child: Icon(Icons.broken_image, size: 50),
+                    child: const Icon(Icons.broken_image, size: 50),
                   );
                 },
               )
@@ -63,12 +72,12 @@ class HeaderWidget extends StatelessWidget {
                 width: 170,
                 height: 250,
                 color: Colors.grey.shade300,
-                child: Icon(Icons.image_not_supported, size: 50),
+                child: const Icon(Icons.image_not_supported, size: 50),
               ),
             ),
           ],
         ),
-        SizedBox(height: 30),
+        const SizedBox(height: 30),
         Text(
           title,
           maxLines: 1,
@@ -83,7 +92,7 @@ class HeaderWidget extends StatelessWidget {
             color: Theme.of(context).colorScheme.background,
           ),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         Text(
           description,
           maxLines: 2,
@@ -92,7 +101,7 @@ class HeaderWidget extends StatelessWidget {
             color: Theme.of(context).colorScheme.background,
           ),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

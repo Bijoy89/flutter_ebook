@@ -7,8 +7,9 @@ class BookTile extends StatelessWidget {
   final String author;
   final int price;
   final String rating;
-  final int TotalRatings;
-  final VoidCallback ontap;
+  final int totalRatings; // rename to lowerCamelCase
+  final VoidCallback onTap;
+  final bool showEditDelete;
 
   const BookTile({
     super.key,
@@ -17,20 +18,22 @@ class BookTile extends StatelessWidget {
     required this.author,
     required this.price,
     required this.rating,
-    required this.ontap,
-    required this.TotalRatings,
+    required this.onTap,
+    required this.totalRatings,
+    this.showEditDelete = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 15),
       child: InkWell(
-        onTap: ontap,
+        onTap: onTap,
         child: Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+            color: theme.colorScheme.primary.withOpacity(0.1),
             borderRadius: BorderRadius.circular(15),
           ),
           child: Row(
@@ -39,7 +42,7 @@ class BookTile extends StatelessWidget {
                 decoration: BoxDecoration(
                   boxShadow: [
                     BoxShadow(
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                      color: theme.colorScheme.primary.withOpacity(0.2),
                       spreadRadius: 2,
                       blurRadius: 8,
                       offset: const Offset(2, 2),
@@ -73,34 +76,34 @@ class BookTile extends StatelessWidget {
                       title,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.bodyLarge,
+                      style: theme.textTheme.bodyLarge,
                     ),
                     const SizedBox(height: 4),
                     Text(
                       "By: $author",
-                      style: Theme.of(context).textTheme.labelMedium,
+                      style: theme.textTheme.labelMedium,
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(
                       "Price: \$${price.toString()}",
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.secondary,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.secondary,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Row(
                       children: [
-                        SvgPicture.asset("Assets/Icons/star.svg"),
+                        SvgPicture.asset("Assets/Icons/star.svg"), // Check asset path casing
                         const SizedBox(width: 4),
                         Text(
                           rating,
-                          style: Theme.of(context).textTheme.bodyMedium,
+                          style: theme.textTheme.bodyMedium,
                         ),
                         const SizedBox(width: 6),
                         Flexible(
                           child: Text(
-                            "($TotalRatings Ratings)",
-                            style: Theme.of(context).textTheme.labelMedium,
+                            "($totalRatings Ratings)",
+                            style: theme.textTheme.labelMedium,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
@@ -109,6 +112,7 @@ class BookTile extends StatelessWidget {
                   ],
                 ),
               ),
+              // If you want to add Edit/Delete buttons later for showEditDelete == true, add here.
             ],
           ),
         ),
