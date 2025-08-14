@@ -27,19 +27,16 @@ class BookService {
   }
 
   // Search books by title or author (case-insensitive)
-  Stream<List<BookModel>> searchBooksStream(String search, String? category) {
-    if (search.isEmpty && (category == null || category == 'All')) {
-      return getAllBooksStream();
-    }
-
+  Stream<List<BookModel>> searchBooksStream(
+      String search, String? category,
+      {String audioFilter = 'All'}) {
     Query query = _booksCollection.orderBy('timestamp', descending: true);
+
     if (category != null && category != 'All') {
       query = query.where('category', isEqualTo: category);
-      print('Filtering category: $category');
     }
 
     return query.snapshots().map((snapshot) {
-      print('Docs count for category "$category": ${snapshot.docs.length}');
       final lowerSearch = search.toLowerCase();
       return snapshot.docs
           .map((doc) =>
@@ -47,10 +44,33 @@ class BookService {
           .where((book) {
         final title = book.title?.toLowerCase() ?? '';
         final author = book.author?.toLowerCase() ?? '';
-        return title.contains(lowerSearch) || author.contains(lowerSearch);
+        final matchesSearch =
+            title.contains(lowerSearch) || author.contains(lowerSearch);
+
+        bool matchesAudio = true;
+        if (audioFilter != 'All') {
+          final audioStr = book.audioLen?.toLowerCase() ?? ''; // e.g., "1 hr" or "30 min"
+
+          double hours = 0;
+
+          if (audioStr.contains('hr')) {
+            final numMatch = RegExp(r'(\d+\.?\d*)').firstMatch(audioStr);
+            if (numMatch != null) hours = double.tryParse(numMatch.group(1)!) ?? 0;
+          } else if (audioStr.contains('min')) {
+            final numMatch = RegExp(r'(\d+\.?\d*)').firstMatch(audioStr);
+            if (numMatch != null) hours = (double.tryParse(numMatch.group(1)!) ?? 0) / 60;
+          }
+
+          if (audioFilter == '<1 Hr') matchesAudio = hours < 1;
+          if (audioFilter == '1-2 Hrs') matchesAudio = hours >= 1 && hours <= 2;
+          if (audioFilter == '>2 Hrs') matchesAudio = hours > 2;
+        }
+
+        return matchesSearch && matchesAudio;
       }).toList();
     });
   }
+
 
   // Fetch books by a list of book IDs (used for readBooks/favorites)
   Future<List<BookModel>> getBooksByIds(List<String> bookIds) async {

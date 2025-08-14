@@ -8,6 +8,7 @@ import 'package:flutter_ebook/Pages/HomePage/Widgets/AppBar.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../Filter_page.dart';
 import '../../Models/bookmodel.dart';
 import '../../Services/BookService.dart';
 import '../BookDetails/BookDetails.dart';
@@ -25,6 +26,8 @@ class _HomePageState extends State<HomePage> {
   final BookService bookService = BookService();
   bool isSubscribed = false;
   String userId = '';
+
+  String selectedAudioFilter = 'All';
 
   final List<String> categories = [
     'All',
@@ -70,7 +73,7 @@ class _HomePageState extends State<HomePage> {
     if (userId.isEmpty) return;
     final userRef = bookService.usersCollection.doc(userId);
     await userRef.set({
-      'readBooks': FieldValue.arrayUnion([bookId])
+      'readBooks': FieldValue.arrayUnion([bookId]),
     }, SetOptions(merge: true));
   }
 
@@ -134,8 +137,11 @@ class _HomePageState extends State<HomePage> {
     final theme = Theme.of(context);
     final normalizedRole = widget.role.toLowerCase().trim();
 
-    Stream<List<BookModel>> booksStream =
-    bookService.searchBooksStream(searchText, selectedCategory);
+    Stream<List<BookModel>> booksStream = bookService.searchBooksStream(
+      searchText,
+      selectedCategory,
+      audioFilter: selectedAudioFilter,
+    );
 
     return Scaffold(
       body: StreamBuilder<List<BookModel>>(
@@ -170,8 +176,10 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               children: [
                 Container(
-                  padding:
-                  const EdgeInsets.symmetric(vertical: 30, horizontal: 10),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 30,
+                    horizontal: 10,
+                  ),
                   color: theme.colorScheme.primary,
                   child: Column(
                     children: [
@@ -223,12 +231,45 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          ElevatedButton.icon(
+                            icon: const Icon(Icons.filter_list),
+                            label: const Text("Filter"),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              foregroundColor: Colors.green,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              elevation: 2,
+                            ),
+                            onPressed: () async {
+                              final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => FilterPage(
+                                    initialAudioFilter: selectedAudioFilter,
+                                  ),
+                                ),
+                              );
+                              if (result != null && result is String) {
+                                setState(() {
+                                  selectedAudioFilter = result;
+                                });
+                              }
+                            },
+                          ),
+                        ],
+                      ),
                       SizedBox(
                         height: 40,
                         child: ListView.separated(
                           scrollDirection: Axis.horizontal,
                           itemCount: categories.length,
-                          separatorBuilder: (_, __) => const SizedBox(width: 10),
+                          separatorBuilder: (_, __) =>
+                          const SizedBox(width: 10),
                           itemBuilder: (context, index) {
                             final cat = categories[index];
                             final isSelected = cat == selectedCategory;
@@ -237,7 +278,9 @@ class _HomePageState extends State<HomePage> {
                               onTap: () => _onCategorySelected(cat),
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 15, vertical: 8),
+                                  horizontal: 15,
+                                  vertical: 8,
+                                ),
                                 decoration: BoxDecoration(
                                   color: isSelected
                                       ? theme.colorScheme.secondary
